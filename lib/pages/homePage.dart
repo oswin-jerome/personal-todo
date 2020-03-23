@@ -139,9 +139,12 @@ class _BottomState extends State<Bottom> {
                             itemCount: categories.length+1,
                             itemBuilder: (bx,i){
                               if(i==categories.length){
-                                return CardAdd();
+                                return GestureDetector(child: CardAdd(),onTap: ()async{
+                              var s =await Navigator.push(context, MaterialPageRoute(builder: (c)=>AddCategory()));
+                              getAllCategories();
+                               },);
                               }else{
-                                return MyCard(progress: double.parse(categories[i]['id'].toString()),);
+                                return MyCard(id: categories[i]['id'],progress: double.parse(categories[i]['id'].toString()),title: categories[i]['name'],);
                               }
                           },),
                           // child: ListView(

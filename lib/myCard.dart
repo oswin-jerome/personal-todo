@@ -5,7 +5,9 @@ import 'package:personal_todo/pages/CategoryHome.dart';
 
 class MyCard extends StatefulWidget {
   double progress;
-  MyCard({this.progress});
+  String title;
+  int id;
+  MyCard({this.id,this.progress,this.title});
   @override
   _MyCardState createState() => _MyCardState();
 }
@@ -38,7 +40,7 @@ class _MyCardState extends State<MyCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>CategoryHome()));
+        Navigator.push(context, MaterialPageRoute(builder: (c)=>CategoryHome(widget.id)));
       },
       child: Hero(
         tag: widget.progress.toString(),
@@ -70,7 +72,7 @@ class _MyCardState extends State<MyCard> {
                       style: Data.cardText1,
                     ),
                     Text(
-                      "Work",
+                      widget.title,
                       style: Data.cardText2,
                     ),
                     Row(
