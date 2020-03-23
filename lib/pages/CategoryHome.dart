@@ -21,6 +21,7 @@ class _CategoryHomeState extends State<CategoryHome> {
 
 
   List tasks = [];
+  List tasks_today = [];
   
   double progress = 0;
 
@@ -31,6 +32,7 @@ class _CategoryHomeState extends State<CategoryHome> {
   }
 
   getBasic() async {
+  var date = DateTime.now();
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
     Database database = await openDatabase(path, version: 1);
@@ -51,6 +53,14 @@ class _CategoryHomeState extends State<CategoryHome> {
       tasks = data;
     });
     print("data");
+
+    var data2 = await database
+        .rawQuery("SELECT * FROM tasks WHERE category = ? and time = ? order by done", [widget.id,'${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day}']);
+
+    setState(() {
+      tasks_today = data2;
+    });
+    print(tasks_today);
     
     
     getCountOfStatus(tasks);
@@ -153,56 +163,101 @@ class _CategoryHomeState extends State<CategoryHome> {
       ),
       body: Container(
         margin: EdgeInsets.only(left: 20, top: 40, right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              count.toString()+" tasks",
-              style: Data.cardText1,
-            ),
-            Text(
-              basic['name'],
-              style: Data.cardText2,
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            ProgressBar(progress.roundToDouble()),
-            SizedBox(
-              height: 30,
-            ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: tasks.length,
-                itemBuilder: (bc, i) {
-                  var s = false;
-                  return ListTile(
-                    title: Text(tasks[i]['name']),
-                    leading: Checkbox(value: tasks[i]['done'] == 1?true:false, onChanged: (v) {
-                      print(v);
-                      if(v==true){
-                        markAsDone(tasks[i]['id']);
-                      }else{
-                        markAsNotDone(tasks[i]['id']);
-                      }
-                    }),
-                    subtitle: Text(tasks[i]['time']),
-                    trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: (){
-                      deleteItem(tasks[i]['id']);
-                    }),
-                    enabled: tasks[i]['done'] == 1?false:true,
-                  );
-                },
-                separatorBuilder: (BuildContext buildContext, i) {
-                  print(i);
-                  return Divider(
-                    height: 3,
-                    color: Colors.grey[600],
-                  );
-                },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                count.toString()+" tasks",
+                style: Data.cardText1,
               ),
-            ),
-          ],
+              Text(
+                basic['name'],
+                style: Data.cardText2,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              ProgressBar(progress.roundToDouble()),
+              SizedBox(
+                height: 30,
+              ),
+              tasks_today.length>0?Text("Today"):Text(""),
+              SizedBox(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: tasks_today.length,
+                  itemBuilder: (bc, i) {
+                    var s = false;
+                    return ListTile(
+                      title: Text(tasks_today[i]['name']),
+                      leading: Checkbox(value: tasks_today[i]['done'] == 1?true:false, onChanged: (v) {
+                        print(v);
+                        if(v==true){
+                          markAsDone(tasks_today[i]['id']);
+                        }else{
+                          markAsNotDone(tasks_today[i]['id']);
+                        }
+                      }),
+                      subtitle: Text(tasks_today[i]['time']),
+                      trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: (){
+                        deleteItem(tasks_today[i]['id']);
+                      }),
+                      enabled: tasks_today[i]['done'] == 1?false:true,
+                    );
+                  },
+                  separatorBuilder: (BuildContext buildContext, i) {
+                    print(i);
+                    return Divider(
+                      height: 3,
+                      color: Colors.grey[600],
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Text("Others"),
+              SizedBox(
+                // height: 100,
+                child: ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: tasks.length,
+                  itemBuilder: (bc, i) {
+                    var s = false;
+                    return ListTile(
+                      title: Text(tasks[i]['name']),
+                      leading: Checkbox(value: tasks[i]['done'] == 1?true:false, onChanged: (v) {
+                        print(v);
+                        if(v==true){
+                          markAsDone(tasks[i]['id']);
+                        }else{
+                          markAsNotDone(tasks[i]['id']);
+                        }
+                      }),
+                      subtitle: Text(tasks[i]['time']),
+                      trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: (){
+                        deleteItem(tasks[i]['id']);
+                      }),
+                      enabled: tasks[i]['done'] == 1?false:true,
+                    );
+                  },
+                  separatorBuilder: (BuildContext buildContext, i) {
+                    print(i);
+                    return Divider(
+                      height: 3,
+                      color: Colors.grey[600],
+                    );
+                  },
+                ),
+              ),
+
+
+            ],
+          ),
         ),
       ),
     );

@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 class MyAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final double statusbarHeight = MediaQuery
+        .of(context)
+        .padding
+        .top;
     return Container(
       padding: EdgeInsets.only(left: 20, top: 25, right: 25),
       child: Stack(

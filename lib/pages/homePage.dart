@@ -39,6 +39,8 @@ class _HomeState extends State<HomePage> {
     getDetils();
   }
 
+  
+
   getDetils() async {
     print("d");
     var dbPath = await getDatabasesPath();
@@ -58,6 +60,7 @@ class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -103,10 +106,13 @@ class Bottom extends StatefulWidget {
 class _BottomState extends State<Bottom> {
   List categories = [];
   var date = DateTime.now();
+  ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
     getAllCategories();
+    _scrollController.addListener((){
+    });
   }
 
   getAllCategories() async {
@@ -128,6 +134,7 @@ class _BottomState extends State<Bottom> {
 
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -145,6 +152,7 @@ class _BottomState extends State<Bottom> {
             height: 350,
             child: Container(
               child: ListView.builder(
+                controller: _scrollController,
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length + 1,
                 itemBuilder: (bx, i) {
