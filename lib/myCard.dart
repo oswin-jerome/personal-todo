@@ -2,23 +2,61 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:personal_todo/Data.dart';
 import 'package:personal_todo/pages/CategoryHome.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
+import 'package:popup_menu/popup_menu.dart';
 
 class MyCard extends StatefulWidget {
   double progress;
   String title;
   int id;
-  MyCard({this.id,this.progress,this.title});
+  Function update;
+  MyCard({this.id,this.progress,this.title,this.update});
   @override
   _MyCardState createState() => _MyCardState();
 }
 
 class _MyCardState extends State<MyCard> {
   GlobalKey<State> _progKey = GlobalKey<State>();
+  
+  // Popup
+  PopupMenu menu;
+  GlobalKey btnKey = GlobalKey();
+
   double prog = 0.0;
+  List tasks = [];
+  double progress = 0.0;
+  int pending = 0;
   @override
   void initState() {
     super.initState();
+
+
+    menu = PopupMenu(items: [
+      MenuItem(title: "Delete",textStyle: TextStyle(color: Colors.red),image: Icon(Icons.delete,color: Colors.red,)),
+      MenuItem(title: "Edit",textStyle: TextStyle(color: Colors.grey),image: Icon(Icons.edit)),
+    ],backgroundColor: Colors.white,lineColor: Colors.black45,highlightColor: Colors.grey[350],maxColumn: 1,onClickMenu: (MenuItemProvider item){
+      print(item.menuTitle);
+
+      if(item.menuTitle=="Delete"){
+        deleteCategory(widget.id);
+      }
+    });
+
     SchedulerBinding.instance.addPostFrameCallback((_) => setProgress());
+  }
+
+
+  void deleteCategory(id) async{
+    var dbPath = await getDatabasesPath();
+    String path = p.join(dbPath, "data.db");
+    Database database = await openDatabase(path, version: 1);
+
+    await database.rawDelete("DELETE FROM tasks WHERE category = ?",[widget.id]);
+    await database.rawDelete("DELETE FROM categroies WHERE id = ?",[widget.id]);
+    getBasic();
+    widget.update();
+    
   }
 
   @override
@@ -31,16 +69,64 @@ class _MyCardState extends State<MyCard> {
   setProgress() {
     print(_progKey.currentContext.size.width);
     setState(() {
-      prog = (_progKey.currentContext.size.width * widget.progress) / 100;
+      prog = (_progKey.currentContext.size.width * progress) / 100;
     });
     print("object");
+    getBasic();
+  }
+
+    getBasic() async {
+    var dbPath = await getDatabasesPath();
+    String path = p.join(dbPath, "data.db");
+    Database database = await openDatabase(path, version: 1);
+    
+
+    var data = await database
+        .rawQuery("SELECT * FROM tasks WHERE category = ? order by done", [widget.id]);
+
+    setState(() {
+      tasks = data;
+    });
+    print(data);
+    
+    getCountOfStatus(tasks);
+
+    // database.close();
+  }
+
+
+  getCountOfStatus(List list) async{
+    int done = 0;
+    int notdone=0;
+    int total;
+    await list.forEach((item){
+      if(item['done']==1){
+        done = done + 1;
+      }else{
+        notdone = notdone + 1;
+      }
+    });
+
+    setState(() {
+      progress = (done/list.length)*100;
+      pending = notdone;
+    });
+
+    return {"done":done,"notdone":notdone};
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+    PopupMenu.context = context;
+
     return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>CategoryHome(widget.id)));
+      onTap: () async{
+        await Navigator.push(context, MaterialPageRoute(builder: (c)=>CategoryHome(widget.id)));
+        getBasic();
+    widget.update();
+
       },
       child: Hero(
         tag: widget.progress.toString(),
@@ -59,7 +145,11 @@ class _MyCardState extends State<MyCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[Image.asset("assets/dots.png")],
+                  children: <Widget>[GestureDetector(key: btnKey, onTap:(){
+
+                    print("Popup");
+                    menu.show(widgetKey: btnKey);
+                  },child: Image.asset("assets/dots.png"))],
                 ),
               ),
               Container(
@@ -68,7 +158,7 @@ class _MyCardState extends State<MyCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "12 tasks",
+                      pending.toString()+" tasks",
                       style: Data.cardText1,
                     ),
                     Text(
@@ -114,7 +204,7 @@ class _MyCardState extends State<MyCard> {
                         ),
                         Container(
                           margin: EdgeInsets.only(left: 5),
-                          child: Text(widget.progress.toString() + "%"),
+                          child: Text(progress.roundToDouble().toString() + "%"),
                         ),
                       ],
                     )

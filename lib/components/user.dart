@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../Data.dart';
 
 class User extends StatelessWidget {
+
+  int tasks;
+  User({this.tasks});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +36,7 @@ class User extends StatelessWidget {
           ),
           Container(
             margin: EdgeInsets.only(top: 1),
-            child: Text("You have 5 tasks to finish today",
+            child: Text("You have ${tasks} tasks to finish today",
                 style: Data.secondaryText),
           )
         ],
