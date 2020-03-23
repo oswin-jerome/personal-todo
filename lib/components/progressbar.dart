@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:personal_todo/Data.dart';
-import 'package:personal_todo/pages/CategoryHome.dart';
 
-class MyCard extends StatefulWidget {
+import '../Data.dart';
+
+class ProgressBar extends StatefulWidget {
   double progress;
-  MyCard({this.progress});
+  ProgressBar(this.progress);
   @override
-  _MyCardState createState() => _MyCardState();
+  _ProgressBarState createState() => _ProgressBarState();
 }
 
-class _MyCardState extends State<MyCard> {
+class _ProgressBarState extends State<ProgressBar> {
   GlobalKey<State> _progKey = GlobalKey<State>();
   double prog = 0.0;
   @override
@@ -36,44 +36,7 @@ class _MyCardState extends State<MyCard> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>CategoryHome()));
-      },
-      child: Hero(
-        tag: widget.progress.toString(),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-          width: 230,
-          height: 330,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(right: 15, top: 15),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[Image.asset("assets/dots.png")],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "12 tasks",
-                      style: Data.cardText1,
-                    ),
-                    Text(
-                      "Work",
-                      style: Data.cardText2,
-                    ),
-                    Row(
+    return Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Expanded(
@@ -107,6 +70,13 @@ class _MyCardState extends State<MyCard> {
                                   
                                 ),
                               ),
+                              // Positioned.fill(
+                              //   right: 150,
+                              //   child: Container(
+                              //     color: Colors.blue,
+                              //     height: 2,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -115,14 +85,6 @@ class _MyCardState extends State<MyCard> {
                           child: Text(widget.progress.toString() + "%"),
                         ),
                       ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                    );
   }
 }
