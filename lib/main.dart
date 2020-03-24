@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_todo/pages/firstPage.dart';
 import 'package:personal_todo/pages/homePage.dart';
 
 void main() => runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
           body1: TextStyle(fontFamily: 'Nunito')
         )
       ),
-      home: HomePage(),
+      home: FirstPage(),
     );
   }
 }

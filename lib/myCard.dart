@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:personal_todo/Data.dart';
 import 'package:personal_todo/pages/CategoryHome.dart';
+import 'package:personal_todo/pages/editCategory.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 import 'package:popup_menu/popup_menu.dart';
@@ -35,11 +36,16 @@ class _MyCardState extends State<MyCard> {
     menu = PopupMenu(items: [
       MenuItem(title: "Delete",textStyle: TextStyle(color: Colors.red),image: Icon(Icons.delete,color: Colors.red,)),
       MenuItem(title: "Edit",textStyle: TextStyle(color: Colors.grey),image: Icon(Icons.edit)),
-    ],backgroundColor: Colors.white,lineColor: Colors.black45,highlightColor: Colors.grey[350],maxColumn: 1,onClickMenu: (MenuItemProvider item){
+    ],backgroundColor: Colors.white,lineColor: Colors.black45,highlightColor: Colors.grey[350],maxColumn: 1,onClickMenu: (MenuItemProvider item)async{
       print(item.menuTitle);
 
       if(item.menuTitle=="Delete"){
         deleteCategory(widget.id);
+      }
+      if(item.menuTitle=="Edit"){
+       await Navigator.push(context, MaterialPageRoute(builder: (c)=>EditCategory(id: widget.id,value: widget.title,)));
+       getBasic();
+       widget.update();
       }
     });
 
@@ -128,91 +134,88 @@ class _MyCardState extends State<MyCard> {
     widget.update();
 
       },
-      child: Hero(
-        tag: widget.progress.toString(),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-          width: 230,
-          height: 330,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(right: 15, top: 15),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[GestureDetector(key: btnKey, onTap:(){
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(10)),
+        margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+        width: 230,
+        height: 330,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(right: 15, top: 15),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[GestureDetector(key: btnKey, onTap:(){
 
-                    print("Popup");
-                    menu.show(widgetKey: btnKey);
-                  },child: Image.asset("assets/dots.png"))],
-                ),
+                  print("Popup");
+                  menu.show(widgetKey: btnKey);
+                },child: Image.asset("assets/dots.png"))],
               ),
-              Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      pending.toString()+" tasks",
-                      style: Data.cardText1,
-                    ),
-                    Text(
-                      widget.title,
-                      style: Data.cardText2,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Expanded(
-                          child: Stack(
-                            // fit: StackFit.expand,
-                            fit: StackFit.passthrough,
-                            key: _progKey,
-                            children: <Widget>[
-                              Container(
-                                decoration: BoxDecoration(
-                                      gradient:
-                                          LinearGradient(colors: Data.gradient)),
-                                height: 4,
-                              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    pending.toString()+" tasks",
+                    style: Data.cardText1,
+                  ),
+                  Text(
+                    widget.title,
+                    style: Data.cardText2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Expanded(
+                        child: Stack(
+                          // fit: StackFit.expand,
+                          fit: StackFit.passthrough,
+                          key: _progKey,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                    gradient:
+                                        LinearGradient(colors: Data.gradient)),
+                              height: 4,
+                            ),
 
-                              Positioned(
-                                left: 40,
-                                child: Text("sdsd"),
-                              ),
+                            Positioned(
+                              left: 40,
+                              child: Text("sdsd"),
+                            ),
 
-                              AnimatedPositioned(
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.decelerate,
-                                right: 0,
-                                top: 0,
-                                bottom: 0,
-                                left: prog,
-                                child: Container(
-                                  // width: 50,
-                                  color: Colors.grey[200],
-                                  
-                                ),
+                            AnimatedPositioned(
+                              duration: Duration(milliseconds: 500),
+                              curve: Curves.decelerate,
+                              right: 0,
+                              top: 0,
+                              bottom: 0,
+                              left: prog,
+                              child: Container(
+                                // width: 50,
+                                color: Colors.grey[200],
+                                
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Text(progress.roundToDouble().toString() + "%"),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 5),
+                        child: Text(progress.roundToDouble().toString() + "%"),
+                      ),
+                    ],
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

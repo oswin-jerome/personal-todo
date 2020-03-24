@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:personal_todo/appBarC.dart';
 import 'package:personal_todo/components/CardAdd.dart';
 import 'package:personal_todo/components/user.dart';
@@ -15,6 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
+  GoogleSignInAccount _currentUser;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'profile',
+    ],
+  );
   var date = DateTime.now();
   int tasks = 0;
   createDB() async {
@@ -37,6 +45,15 @@ class _HomeState extends State<HomePage> {
     createDB();
     // getAllCategories();
     getDetils();
+
+    print("_currentUser");
+     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+      setState(() {
+        _currentUser = account;
+      });
+    });
+    _googleSignIn.signInSilently();
+    print(_currentUser);
   }
 
   
@@ -82,7 +99,7 @@ class _HomeState extends State<HomePage> {
                       SizedBox(
                         height: 60,
                       ),
-                      User(tasks:tasks)
+                      User(tasks:tasks,user:_currentUser)
                     ],
                   ),
                   Bottom(updateCount:getDetils),
@@ -152,6 +169,7 @@ class _BottomState extends State<Bottom> {
             height: 350,
             child: Container(
               child: ListView.builder(
+                padding: EdgeInsets.only(left: 60,right: 30),
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length + 1,

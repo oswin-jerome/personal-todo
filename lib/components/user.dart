@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../Data.dart';
 
 class User extends StatelessWidget {
 
   int tasks;
-  User({this.tasks});
+  GoogleSignInAccount user;
+  User({this.tasks,this.user});
 
   @override
   Widget build(BuildContext context) {
+    print(user);
     return Container(
       margin: EdgeInsets.only(left: 60),
       child: Column(
@@ -21,13 +24,13 @@ class User extends StatelessWidget {
               onTap: () {},
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    "https://avatars1.githubusercontent.com/u/23547645?s=460&v=4"),
+                    user.photoUrl),
               ),
             ),
           ),
           Container(
             margin: EdgeInsets.only(top: 20),
-            child: Text("Hello, Oswin Jerome", style: Data.nameStyle),
+            child: Text("Hello, ${user.displayName}", style: Data.nameStyle),
           ),
           Container(
             margin: EdgeInsets.only(top: 10),

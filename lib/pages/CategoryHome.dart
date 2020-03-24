@@ -149,15 +149,18 @@ class _CategoryHomeState extends State<CategoryHome> {
 
           getBasic();
         },
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              gradient: LinearGradient(colors: Data.gradient)),
-          height: 50,
-          width: 50,
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
+        child: Hero(
+          tag: widget.id.toString()+"a",
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient: LinearGradient(colors: Data.gradient)),
+            height: 50,
+            width: 50,
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

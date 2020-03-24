@@ -89,12 +89,15 @@ class _AddTaskState extends State<AddTask> {
             print("sd");
             insertTask(_nameController.value.text, _dateController.value.text, widget.id);
           },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            decoration:
-                BoxDecoration(gradient: LinearGradient(colors: Data.gradient)),
-            child: Center(
-              child: Text("Save",style: TextStyle(color: Colors.white,fontSize: 18),),
+          child: Hero(
+            tag: widget.id.toString()+"a",
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              decoration:
+                  BoxDecoration(gradient: LinearGradient(colors: Data.gradient)),
+              child: Center(
+                child: Text("Save",style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: 'Ninuto',fontWeight: FontWeight.normal),),
+              ),
             ),
           ),
         )
