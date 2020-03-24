@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
+  GlobalKey<ScaffoldState> _drawKey = GlobalKey();
   GoogleSignInAccount _currentUser;
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -77,7 +78,20 @@ class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      key: _drawKey,
+      drawerEdgeDragWidth: 30,
+      drawerScrimColor: Color(0xd0000000),
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            Image.network('https://avatars1.githubusercontent.com/u/23547645?s=460&v=4'),
+            ListTile(
+              title: Text("App by",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),),
+              subtitle: Text("Oswin Jerome",style: Data.cardText2,),
+            )
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -95,7 +109,10 @@ class _HomeState extends State<HomePage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      MyAppBar(),
+                      MyAppBar(drawerTrigger: (){
+                        print("sdsdsds");
+                        _drawKey.currentState.openDrawer();
+                      }),
                       SizedBox(
                         height: 60,
                       ),

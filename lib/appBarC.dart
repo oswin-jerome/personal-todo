@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MyAppBar extends StatelessWidget {
+  Function drawerTrigger;
+  MyAppBar({this.drawerTrigger});
   @override
   Widget build(BuildContext context) {
-    final double statusbarHeight = MediaQuery
-        .of(context)
-        .padding
-        .top;
+    final double statusbarHeight = MediaQuery.of(context).padding.top;
     return Container(
       padding: EdgeInsets.only(left: 20, top: 25, right: 25),
       child: Stack(
@@ -15,7 +14,10 @@ class MyAppBar extends StatelessWidget {
           Positioned(
             top: 0,
             left: 0,
-            child: Image.asset("assets/menu.png"),
+            child: GestureDetector(
+              onTap: drawerTrigger,
+              child: Image.asset("assets/menu.png"),
+            ),
           ),
           Align(
             alignment: Alignment.center,
