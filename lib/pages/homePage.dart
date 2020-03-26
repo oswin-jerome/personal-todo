@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:personal_todo/appBarC.dart';
 import 'package:personal_todo/components/CardAdd.dart';
+import 'package:personal_todo/components/progressbar.dart';
 import 'package:personal_todo/components/user.dart';
 import 'package:personal_todo/pages/addCategory.dart';
+import 'package:personal_todo/pages/allTasks.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import '../Data.dart';
@@ -177,6 +179,10 @@ class _HomeState extends State<HomePage> {
                     ],
                   ),
                   Bottom(updateCount: getDetils),
+                  FlatButton(onPressed: ()async{
+                    await Navigator.push(context, MaterialPageRoute(builder: (c)=>AllTasks()));
+                    getDetils();
+                  }, child: Text("View All",style: TextStyle(color: Colors.white),)),
                 ],
               ),
             ),
@@ -207,7 +213,7 @@ class _BottomState extends State<Bottom> {
 
   getAllCategories() async {
     widget.updateCount();
-
+    
     print("d");
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");

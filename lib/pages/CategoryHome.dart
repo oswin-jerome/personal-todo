@@ -4,6 +4,8 @@ import 'package:personal_todo/pages/addTasks.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 import '../Data.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class CategoryHome extends StatefulWidget {
   int id;
@@ -17,22 +19,22 @@ class _CategoryHomeState extends State<CategoryHome> {
     "name": "",
     "id": "",
   };
-    int count = 0;
-
+  int count = 0;
 
   List tasks = [];
   List tasks_today = [];
-  
+
   double progress = 0;
 
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting();
     getBasic();
   }
 
   getBasic() async {
-  var date = DateTime.now();
+    var date = DateTime.now();
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
     Database database = await openDatabase(path, version: 1);
@@ -46,88 +48,91 @@ class _CategoryHomeState extends State<CategoryHome> {
       };
     });
 
-    var data = await database
-        .rawQuery("SELECT * FROM tasks WHERE category = ? order by done", [widget.id]);
+    var data = await database.rawQuery(
+        "SELECT * FROM tasks WHERE category = ? order by done", [widget.id]);
 
     setState(() {
       tasks = data;
     });
 
-
-    tasks.forEach((f){
-
-    });
-
     // print("data");
 
-    var data2 = await database
-        .rawQuery("SELECT * FROM tasks WHERE category = ? and time = ? order by done", [widget.id,'${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day}']);
+    var data2 = await database.rawQuery(
+        "SELECT * FROM tasks WHERE category = ? and time = ? order by done", [
+      widget.id,
+      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day}'
+    ]);
 
     setState(() {
       tasks_today = data2;
     });
     // print(tasks_today);
-    
-    
+
     getCountOfStatus(tasks);
     // database.close();
   }
 
+  isExpired(task,done) {
+    DateTime taskDate = DateTime.parse(task);
+    DateTime today = DateTime.now().subtract(Duration(days: 1));
+    if (taskDate.isBefore(today) && done !=1) {
+      return TextStyle(color: Colors.red);
+    } else {
+      return TextStyle();
+    }
+  }
 
-  getCountOfStatus(List list) async{
+  getCountOfStatus(List list) async {
     int done = 0;
-    int notdone=0;
+    int notdone = 0;
     int total;
-    await list.forEach((item){
-      if(item['done']==1){
+    await list.forEach((item) {
+      if (item['done'] == 1) {
         done = done + 1;
-      }else{
+      } else {
         notdone = notdone + 1;
       }
     });
 
     setState(() {
-      progress = (done/list.length)*100;
+      progress = (done / list.length) * 100;
       count = notdone;
     });
 
     // print(count);
 
-    return {"done":done,"notdone":notdone};
-
+    return {"done": done, "notdone": notdone};
   }
 
-  markAsDone(int id) async{
+  markAsDone(int id) async {
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
-    
+
     Database database = await openDatabase(path, version: 1);
 
-
-    database.rawUpdate("UPDATE tasks SET done = 1 WHERE id = ?",[id]);
+    database.rawUpdate("UPDATE tasks SET done = 1 WHERE id = ?", [id]);
 
     getBasic();
   }
 
-  markAsNotDone(int id) async{
+  markAsNotDone(int id) async {
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
-    
+
     Database database = await openDatabase(path, version: 1);
 
-
-    database.rawUpdate("UPDATE tasks SET done = 0 WHERE id = ?",[id]);
+    database.rawUpdate("UPDATE tasks SET done = 0 WHERE id = ?", [id]);
 
     getBasic();
   }
-  deleteItem(int id) async{
+
+  deleteItem(int id) async {
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
-    
+
     Database database = await openDatabase(path, version: 1);
 
-
-    database.rawDelete("DELETE FROM tasks WHERE id = ?",[id]);
+    database.rawDelete("DELETE FROM tasks WHERE id = ?", [id]);
 
     getBasic();
   }
@@ -156,7 +161,7 @@ class _CategoryHomeState extends State<CategoryHome> {
           getBasic();
         },
         child: Hero(
-          tag: widget.id.toString()+"a",
+          tag: widget.id.toString() + "a",
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
@@ -177,7 +182,7 @@ class _CategoryHomeState extends State<CategoryHome> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                count.toString()+" tasks",
+                count.toString() + " tasks",
                 style: Data.cardText1,
               ),
               Text(
@@ -191,7 +196,7 @@ class _CategoryHomeState extends State<CategoryHome> {
               SizedBox(
                 height: 30,
               ),
-              tasks_today.length>0?Text("Today"):Text(""),
+              tasks_today.length > 0 ? Text("Today") : Text(""),
               SizedBox(
                 child: ListView.separated(
                   shrinkWrap: true,
@@ -201,19 +206,23 @@ class _CategoryHomeState extends State<CategoryHome> {
                     var s = false;
                     return ListTile(
                       title: Text(tasks_today[i]['name']),
-                      leading: Checkbox(value: tasks_today[i]['done'] == 1?true:false, onChanged: (v) {
-                        // print(v);
-                        if(v==true){
-                          markAsDone(tasks_today[i]['id']);
-                        }else{
-                          markAsNotDone(tasks_today[i]['id']);
-                        }
-                      }),
+                      leading: Checkbox(
+                          value: tasks_today[i]['done'] == 1 ? true : false,
+                          onChanged: (v) {
+                            // print(v);
+                            if (v == true) {
+                              markAsDone(tasks_today[i]['id']);
+                            } else {
+                              markAsNotDone(tasks_today[i]['id']);
+                            }
+                          }),
                       subtitle: Text(tasks_today[i]['time']),
-                      trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: (){
-                        deleteItem(tasks_today[i]['id']);
-                      }),
-                      enabled: tasks_today[i]['done'] == 1?false:true,
+                      trailing: IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          onPressed: () {
+                            deleteItem(tasks_today[i]['id']);
+                          }),
+                      enabled: tasks_today[i]['done'] == 1 ? false : true,
                     );
                   },
                   separatorBuilder: (BuildContext buildContext, i) {
@@ -231,27 +240,37 @@ class _CategoryHomeState extends State<CategoryHome> {
               Text("Others"),
               SizedBox(
                 // height: 100,
+
+                // All task
                 child: ListView.separated(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: tasks.length,
                   itemBuilder: (bc, i) {
                     var s = false;
+
                     return ListTile(
-                      title: Text(tasks[i]['name']),
-                      leading: Checkbox(value: tasks[i]['done'] == 1?true:false, onChanged: (v) {
-                        // print(v);
-                        if(v==true){
-                          markAsDone(tasks[i]['id']);
-                        }else{
-                          markAsNotDone(tasks[i]['id']);
-                        }
-                      }),
+                      title: Text(
+                        tasks[i]['name'],
+                        style: isExpired(tasks[i]['time'], tasks[i]['done']),
+                      ),
+                      leading: Checkbox(
+                          value: tasks[i]['done'] == 1 ? true : false,
+                          onChanged: (v) {
+                            // print(v);
+                            if (v == true) {
+                              markAsDone(tasks[i]['id']);
+                            } else {
+                              markAsNotDone(tasks[i]['id']);
+                            }
+                          }),
                       subtitle: Text(tasks[i]['time']),
-                      trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: (){
-                        deleteItem(tasks[i]['id']);
-                      }),
-                      enabled: tasks[i]['done'] == 1?false:true,
+                      trailing: IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          onPressed: () {
+                            deleteItem(tasks[i]['id']);
+                          }),
+                      enabled: tasks[i]['done'] == 1 ? false : true,
                     );
                   },
                   separatorBuilder: (BuildContext buildContext, i) {
@@ -263,8 +282,6 @@ class _CategoryHomeState extends State<CategoryHome> {
                   },
                 ),
               ),
-
-
             ],
           ),
         ),

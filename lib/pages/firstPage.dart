@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:personal_todo/pages/homePage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class FirstPage extends StatefulWidget {
   @override
   _FirstPageState createState() => _FirstPageState();
@@ -25,6 +26,8 @@ class _FirstPageState extends State<FirstPage> {
   void initState() {
     super.initState();
     // _handleSignIn();
+
+    // initNotification();
       
      _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
       setState(() {
@@ -68,4 +71,33 @@ class _FirstPageState extends State<FirstPage> {
       ),
     );
   }
+
+
+
+  // initNotification() async{
+
+  //   var time = Time(22, 04, 0);
+
+  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =  FlutterLocalNotificationsPlugin();
+  //   var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+  //   var initializationSettingsIOS = IOSInitializationSettings( onDidReceiveLocalNotification: (a, s, d, f) {});
+  //   var initializationSettings = InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+
+  //   var androidPlatformChannelSpecifics =
+  //   AndroidNotificationDetails('ch1',
+  //       'ch1', 'description');
+  //   var iOSPlatformChannelSpecifics =
+  //       IOSNotificationDetails();
+  //   var platformChannelSpecifics = NotificationDetails(
+  //       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  //   await flutterLocalNotificationsPlugin.showDailyAtTime(
+  //       0,
+  //       'show daily title',
+  //       'Daily notification shown at approximately ',
+  //       time,
+  //       platformChannelSpecifics);
+  // }
+
+
+
 }

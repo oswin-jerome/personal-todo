@@ -198,7 +198,7 @@ class _MyCardState extends State<MyCard> {
                               right: 0,
                               top: 0,
                               bottom: 0,
-                              left: prog,
+                              left: progress,
                               child: Container(
                                 // width: 50,
                                 color: Colors.grey[200],
