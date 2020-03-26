@@ -180,6 +180,8 @@ class _MyCardState extends State<MyCard> {
                           children: <Widget>[
                             Container(
                               decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+
                                     gradient:
                                         LinearGradient(colors: Data.gradient)),
                               height: 4,

@@ -47,6 +47,7 @@ class _ProgressBarState extends State<ProgressBar> {
                             children: <Widget>[
                               Container(
                                 decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
                                       gradient:
                                           LinearGradient(colors: Data.gradient)),
                                 height: 4,

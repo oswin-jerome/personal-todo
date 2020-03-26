@@ -5,10 +5,11 @@ import 'package:personal_todo/components/CardAdd.dart';
 import 'package:personal_todo/components/user.dart';
 import 'package:personal_todo/pages/addCategory.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:path_provider/path_provider.dart';
 import '../Data.dart';
 import '../myCard.dart';
 import 'package:path/path.dart' as p;
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,7 +49,7 @@ class _HomeState extends State<HomePage> {
     getDetils();
 
     print("_currentUser");
-     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
       });
@@ -57,8 +58,6 @@ class _HomeState extends State<HomePage> {
     print(_currentUser);
   }
 
-  
-
   getDetils() async {
     print("d");
     var dbPath = await getDatabasesPath();
@@ -66,12 +65,16 @@ class _HomeState extends State<HomePage> {
     Database database = await openDatabase(path, version: 1);
 
     database.transaction((action) async {
-      var res = await action.rawQuery("SELECT * FROM tasks WHERE time = ? and done = 0",['${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day}']);
+      var res = await action.rawQuery(
+          "SELECT * FROM tasks WHERE time = ? and done = 0", [
+        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day}'
+      ]);
       print(res.length);
       setState(() {
         tasks = res.length;
       });
-      print('${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day}');
+      print(
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day}');
     });
   }
 
@@ -84,11 +87,66 @@ class _HomeState extends State<HomePage> {
       drawer: Drawer(
         child: Column(
           children: <Widget>[
-            Image.network('https://avatars1.githubusercontent.com/u/23547645?s=460&v=4'),
+            Image.network(
+                'https://avatars1.githubusercontent.com/u/23547645?s=460&v=4'),
             ListTile(
-              title: Text("App by",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal),),
-              subtitle: Text("Oswin Jerome",style: Data.cardText2,),
-            )
+              title: Text(
+                "App by",
+                style: TextStyle(
+                    color: Colors.grey, fontWeight: FontWeight.normal),
+              ),
+              subtitle: Text(
+                "Oswin Jerome",
+                style: Data.cardText2,
+              ),
+            ),
+            // RaisedButton(
+            //   child: Text("Backup data"),
+            //   onPressed: () async {
+            //   final directory = await getExternalStorageDirectory();
+            //   print(directory);
+            //   final myDir = new Directory('/storage/emulated/0');
+            //   myDir.exists().then((isThere) {
+            //     isThere ? print('exists') : print('non-existent');
+            //   });
+
+            //   // myDir.list().listen((onData)=>print(onData));
+
+
+
+            //   String database = await getDatabasesPath();
+            //   final myDirs = new Directory(database);
+            //   myDirs.list().listen((onData)=>print(onData));
+                
+            //   var myFile = new File(database+'/data.db');
+            //   myFile.copy('/storage/emulated/0/data.db');
+
+
+
+            // }),
+            // RaisedButton(
+            //   child: Text("Import data"),
+            //   onPressed: () async {
+
+              
+            //   String database = await getDatabasesPath();
+            //   var myFile = new File('/storage/emulated/0'+'/data.db');
+            //   myFile.exists().then((onValue){
+            //     if(onValue){
+            //       myFile.copy(database+"/data.db").then((onValue){
+            //         print(onValue);
+            //       });
+            //     }else{
+            //       print("No file");
+            //     }
+            //   }).catchError((onError){
+            //     print("No file");
+            //   });
+            //   // myFile.copy('/storage/emulated/0/data.db');
+
+
+
+            // }),
           ],
         ),
       ),
@@ -109,17 +167,17 @@ class _HomeState extends State<HomePage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      MyAppBar(drawerTrigger: (){
+                      MyAppBar(drawerTrigger: () {
                         print("sdsdsds");
                         _drawKey.currentState.openDrawer();
                       }),
                       SizedBox(
                         height: 60,
                       ),
-                      User(tasks:tasks,user:_currentUser)
+                      User(tasks: tasks, user: _currentUser)
                     ],
                   ),
-                  Bottom(updateCount:getDetils),
+                  Bottom(updateCount: getDetils),
                 ],
               ),
             ),
@@ -145,8 +203,7 @@ class _BottomState extends State<Bottom> {
   void initState() {
     super.initState();
     getAllCategories();
-    _scrollController.addListener((){
-    });
+    _scrollController.addListener(() {});
   }
 
   getAllCategories() async {
@@ -165,9 +222,7 @@ class _BottomState extends State<Bottom> {
       });
       print("res");
     });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +241,7 @@ class _BottomState extends State<Bottom> {
             height: 350,
             child: Container(
               child: ListView.builder(
-                padding: EdgeInsets.only(left: 60,right: 30),
+                padding: EdgeInsets.only(left: 60, right: 30),
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length + 1,
@@ -199,7 +254,6 @@ class _BottomState extends State<Bottom> {
                             MaterialPageRoute(builder: (c) => AddCategory()));
                         getAllCategories();
                         widget.updateCount();
-
                       },
                     );
                   } else {
@@ -207,7 +261,9 @@ class _BottomState extends State<Bottom> {
                       id: categories[i]['id'],
                       progress: double.parse(categories[i]['id'].toString()),
                       title: categories[i]['name'],
-                      update: (){getAllCategories();},
+                      update: () {
+                        getAllCategories();
+                      },
                     );
                   }
                 },
@@ -231,50 +287,45 @@ class _BottomState extends State<Bottom> {
     );
   }
 
-
-  String dateIntToString(int i){
-
+  String dateIntToString(int i) {
     switch (i) {
       case 1:
-          return "January";
+        return "January";
         break;
       case 2:
-          return "February";
+        return "February";
         break;
       case 3:
-          return "March";
+        return "March";
         break;
       case 4:
-          return "April";
+        return "April";
         break;
       case 5:
-          return "May";
+        return "May";
         break;
       case 6:
-          return "June";
+        return "June";
         break;
       case 7:
-          return "July";
+        return "July";
         break;
       case 8:
-          return "August";
+        return "August";
         break;
       case 9:
-          return "September";
+        return "September";
         break;
       case 10:
-          return "October";
+        return "October";
         break;
       case 11:
-          return "November";
+        return "November";
         break;
       case 12:
-          return "December";
+        return "December";
         break;
       default:
     }
-
   }
-
-
 }
