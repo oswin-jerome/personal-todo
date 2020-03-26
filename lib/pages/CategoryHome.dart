@@ -38,7 +38,7 @@ class _CategoryHomeState extends State<CategoryHome> {
     Database database = await openDatabase(path, version: 1);
     var result = await database
         .rawQuery("SELECT * FROM categroies WHERE id = ?", [widget.id]);
-    print(result[0]['name']);
+    // print(result[0]['name']);
     setState(() {
       basic = {
         "name": result[0]['name'],
@@ -55,7 +55,7 @@ class _CategoryHomeState extends State<CategoryHome> {
 
 
     tasks.forEach((f){
-      
+
     });
 
     // print("data");
@@ -202,7 +202,7 @@ class _CategoryHomeState extends State<CategoryHome> {
                     return ListTile(
                       title: Text(tasks_today[i]['name']),
                       leading: Checkbox(value: tasks_today[i]['done'] == 1?true:false, onChanged: (v) {
-                        print(v);
+                        // print(v);
                         if(v==true){
                           markAsDone(tasks_today[i]['id']);
                         }else{
@@ -217,7 +217,7 @@ class _CategoryHomeState extends State<CategoryHome> {
                     );
                   },
                   separatorBuilder: (BuildContext buildContext, i) {
-                    print(i);
+                    // print(i);
                     return Divider(
                       height: 3,
                       color: Colors.grey[600],
