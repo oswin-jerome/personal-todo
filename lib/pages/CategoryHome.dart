@@ -52,7 +52,13 @@ class _CategoryHomeState extends State<CategoryHome> {
     setState(() {
       tasks = data;
     });
-    print("data");
+
+
+    tasks.forEach((f){
+      
+    });
+
+    // print("data");
 
     var data2 = await database
         .rawQuery("SELECT * FROM tasks WHERE category = ? and time = ? order by done", [widget.id,'${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day}']);
@@ -60,7 +66,7 @@ class _CategoryHomeState extends State<CategoryHome> {
     setState(() {
       tasks_today = data2;
     });
-    print(tasks_today);
+    // print(tasks_today);
     
     
     getCountOfStatus(tasks);
@@ -85,7 +91,7 @@ class _CategoryHomeState extends State<CategoryHome> {
       count = notdone;
     });
 
-    print(count);
+    // print(count);
 
     return {"done":done,"notdone":notdone};
 
@@ -234,7 +240,7 @@ class _CategoryHomeState extends State<CategoryHome> {
                     return ListTile(
                       title: Text(tasks[i]['name']),
                       leading: Checkbox(value: tasks[i]['done'] == 1?true:false, onChanged: (v) {
-                        print(v);
+                        // print(v);
                         if(v==true){
                           markAsDone(tasks[i]['id']);
                         }else{
@@ -249,7 +255,7 @@ class _CategoryHomeState extends State<CategoryHome> {
                     );
                   },
                   separatorBuilder: (BuildContext buildContext, i) {
-                    print(i);
+                    // print(i);
                     return Divider(
                       height: 3,
                       color: Colors.grey[600],

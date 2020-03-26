@@ -31,7 +31,7 @@ class _ProgressBarState extends State<ProgressBar> {
     setState(() {
       prog = (_progKey.currentContext.size.width * widget.progress) / 100;
     });
-    print("object");
+    // print("object");
   }
 
   @override

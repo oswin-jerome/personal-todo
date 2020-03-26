@@ -48,18 +48,18 @@ class _HomeState extends State<HomePage> {
     // getAllCategories();
     getDetils();
 
-    print("_currentUser");
+    // print("_currentUser");
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
       });
     });
     _googleSignIn.signInSilently();
-    print(_currentUser);
+    // print(_currentUser);
   }
 
   getDetils() async {
-    print("d");
+    // print("d");
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
     Database database = await openDatabase(path, version: 1);
@@ -69,12 +69,11 @@ class _HomeState extends State<HomePage> {
           "SELECT * FROM tasks WHERE time = ? and done = 0", [
         '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day}'
       ]);
-      print(res.length);
+      // print(res.length);
       setState(() {
         tasks = res.length;
       });
-      print(
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day}');
+      // print('${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day}');
     });
   }
 

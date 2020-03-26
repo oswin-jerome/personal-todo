@@ -73,11 +73,11 @@ class _MyCardState extends State<MyCard> {
   }
 
   setProgress() {
-    print(_progKey.currentContext.size.width);
+    // print(_progKey.currentContext.size.width);
     setState(() {
       prog = (_progKey.currentContext.size.width * progress) / 100;
     });
-    print("object");
+    // print("object");
     getBasic();
   }
 
@@ -93,7 +93,7 @@ class _MyCardState extends State<MyCard> {
     setState(() {
       tasks = data;
     });
-    print(data);
+    // print(data);
     
     getCountOfStatus(tasks);
 

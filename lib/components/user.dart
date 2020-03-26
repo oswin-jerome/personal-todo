@@ -11,7 +11,7 @@ class User extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(user);
+    // print(user);
     return Container(
       margin: EdgeInsets.only(left: 60),
       child: Column(
