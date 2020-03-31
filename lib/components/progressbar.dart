@@ -83,7 +83,7 @@ class _ProgressBarState extends State<ProgressBar> {
                         ),
                         Container(
                           margin: EdgeInsets.only(left: 5),
-                          child: Text(widget.progress.toString() + "%",style: TextStyle(color: Colors.grey,fontSize: 14),),
+                          child: Text(widget.progress.roundToDouble().toString() + "%",style: TextStyle(color: Colors.grey,fontSize: 14),),
                         ),
                       ],
                     );
