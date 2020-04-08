@@ -27,8 +27,6 @@ class _FirstPageState extends State<FirstPage> {
     super.initState();
     // _handleSignIn();
 
-    // initNotification();
-    // ssd
       
      _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
       setState(() {
