@@ -87,6 +87,7 @@ class _AllTasksState extends State<AllTasks> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              
               // SizedBox(height: 10,),
               // Text("All Tasks",style: Data.cardText2,textAlign: TextAlign.center,),
               // SizedBox(height: 30,),

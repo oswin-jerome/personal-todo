@@ -273,18 +273,6 @@ class _BottomState extends State<Bottom> {
                   }
                 },
               ),
-              // child: ListView(
-              //   scrollDirection: Axis.horizontal,
-              //   children: <Widget>[
-
-              //     MyCard(progress: 20,),
-              //     MyCard(progress: 30,),
-              //     MyCard(progress: 70,),
-              //     GestureDetector(child: CardAdd(),onTap: (){
-              //       Navigator.push(context, MaterialPageRoute(builder: (c)=>AddCategory()));
-              //     },),
-              //   ],
-              // ),
             ),
           ),
         ],
