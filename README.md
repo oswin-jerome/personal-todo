@@ -1,16 +1,28 @@
-# personal_todo
+<div style="display:flex; justify-content:space-between;align-items:center">
+    <h1>Personal Todo</h1>
+    <a href="https://github.com/oswin-jerome/personal-todo/releases/latest/download/personal.todo.apk" id="btn" >Download APK</a>
+</div>
+</br>
+</br>
+</br>
+<div style="display: grid; grid-template-columns:1fr 1fr 1fr;gap:20px">
+    <img src="./sc1.jpg" />
+    <img src="./sc2.jpg" />
+    <img src="./sc3.jpg" />
+</div>
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<style>
+    img{
+        width:100%;
+    }
+    #btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+</style>

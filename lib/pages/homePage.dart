@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:personal_todo/appBarC.dart';
 import 'package:personal_todo/components/CardAdd.dart';
 import 'package:personal_todo/components/progressbar.dart';
@@ -20,13 +20,13 @@ class HomePage extends StatefulWidget {
 
 class _HomeState extends State<HomePage> {
   GlobalKey<ScaffoldState> _drawKey = GlobalKey();
-  GoogleSignInAccount _currentUser;
-  GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'profile',
-    ],
-  );
+  // GoogleSignInAccount _currentUser;
+  // GoogleSignIn _googleSignIn = GoogleSignIn(
+  //   scopes: [
+  //     'email',
+  //     'profile',
+  //   ],
+  // );
   var date = DateTime.now();
   int tasks = 0;
   createDB() async {
@@ -51,12 +51,12 @@ class _HomeState extends State<HomePage> {
     getDetils();
 
     // print("_currentUser");
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      setState(() {
-        _currentUser = account;
-      });
-    });
-    _googleSignIn.signInSilently();
+    // _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    //   setState(() {
+    //     _currentUser = account;
+    //   });
+    // });
+    // _googleSignIn.signInSilently();
     // print(_currentUser);
   }
 
@@ -113,23 +113,18 @@ class _HomeState extends State<HomePage> {
 
             //   // myDir.list().listen((onData)=>print(onData));
 
-
-
             //   String database = await getDatabasesPath();
             //   final myDirs = new Directory(database);
             //   myDirs.list().listen((onData)=>print(onData));
-                
+
             //   var myFile = new File(database+'/data.db');
             //   myFile.copy('/storage/emulated/0/data.db');
-
-
 
             // }),
             // RaisedButton(
             //   child: Text("Import data"),
             //   onPressed: () async {
 
-              
             //   String database = await getDatabasesPath();
             //   var myFile = new File('/storage/emulated/0'+'/data.db');
             //   myFile.exists().then((onValue){
@@ -144,8 +139,6 @@ class _HomeState extends State<HomePage> {
             //     print("No file");
             //   });
             //   // myFile.copy('/storage/emulated/0/data.db');
-
-
 
             // }),
           ],
@@ -175,14 +168,20 @@ class _HomeState extends State<HomePage> {
                       SizedBox(
                         height: 60,
                       ),
-                      User(tasks: tasks, user: _currentUser)
+                      User(tasks: tasks)
                     ],
                   ),
                   Bottom(updateCount: getDetils),
-                  FlatButton(onPressed: ()async{
-                    await Navigator.push(context, MaterialPageRoute(builder: (c)=>AllTasks()));
-                    getDetils();
-                  }, child: Text("View All",style: TextStyle(color: Colors.white),)),
+                  FlatButton(
+                      onPressed: () async {
+                        await Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => AllTasks()));
+                        getDetils();
+                      },
+                      child: Text(
+                        "View All",
+                        style: TextStyle(color: Colors.white),
+                      )),
                 ],
               ),
             ),
@@ -213,7 +212,7 @@ class _BottomState extends State<Bottom> {
 
   getAllCategories() async {
     widget.updateCount();
-    
+
     print("d");
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");

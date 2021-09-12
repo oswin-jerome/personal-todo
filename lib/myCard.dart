@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:personal_todo/Data.dart';
+import 'package:personal_todo/components/progressbar.dart';
 import 'package:personal_todo/pages/CategoryHome.dart';
 import 'package:personal_todo/pages/editCategory.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,14 +13,14 @@ class MyCard extends StatefulWidget {
   String title;
   int id;
   Function update;
-  MyCard({this.id,this.progress,this.title,this.update});
+  MyCard({this.id, this.progress, this.title, this.update});
   @override
   _MyCardState createState() => _MyCardState();
 }
 
 class _MyCardState extends State<MyCard> {
   GlobalKey<State> _progKey = GlobalKey<State>();
-  
+
   // Popup
   PopupMenu menu;
   GlobalKey btnKey = GlobalKey();
@@ -32,37 +33,57 @@ class _MyCardState extends State<MyCard> {
   void initState() {
     super.initState();
 
+    menu = PopupMenu(
+        items: [
+          MenuItem(
+              title: "Delete",
+              textStyle: TextStyle(color: Colors.red),
+              image: Icon(
+                Icons.delete,
+                color: Colors.red,
+              )),
+          MenuItem(
+              title: "Edit",
+              textStyle: TextStyle(color: Colors.grey),
+              image: Icon(Icons.edit)),
+        ],
+        backgroundColor: Colors.white,
+        lineColor: Colors.black45,
+        highlightColor: Colors.grey[350],
+        maxColumn: 1,
+        onClickMenu: (MenuItemProvider item) async {
+          print(item.menuTitle);
 
-    menu = PopupMenu(items: [
-      MenuItem(title: "Delete",textStyle: TextStyle(color: Colors.red),image: Icon(Icons.delete,color: Colors.red,)),
-      MenuItem(title: "Edit",textStyle: TextStyle(color: Colors.grey),image: Icon(Icons.edit)),
-    ],backgroundColor: Colors.white,lineColor: Colors.black45,highlightColor: Colors.grey[350],maxColumn: 1,onClickMenu: (MenuItemProvider item)async{
-      print(item.menuTitle);
-
-      if(item.menuTitle=="Delete"){
-        deleteCategory(widget.id);
-      }
-      if(item.menuTitle=="Edit"){
-       await Navigator.push(context, MaterialPageRoute(builder: (c)=>EditCategory(id: widget.id,value: widget.title,)));
-       getBasic();
-       widget.update();
-      }
-    });
+          if (item.menuTitle == "Delete") {
+            deleteCategory(widget.id);
+          }
+          if (item.menuTitle == "Edit") {
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (c) => EditCategory(
+                          id: widget.id,
+                          value: widget.title,
+                        )));
+            getBasic();
+            widget.update();
+          }
+        });
 
     SchedulerBinding.instance.addPostFrameCallback((_) => setProgress());
   }
 
-
-  void deleteCategory(id) async{
+  void deleteCategory(id) async {
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
     Database database = await openDatabase(path, version: 1);
 
-    await database.rawDelete("DELETE FROM tasks WHERE category = ?",[widget.id]);
-    await database.rawDelete("DELETE FROM categroies WHERE id = ?",[widget.id]);
+    await database
+        .rawDelete("DELETE FROM tasks WHERE category = ?", [widget.id]);
+    await database
+        .rawDelete("DELETE FROM categroies WHERE id = ?", [widget.id]);
     getBasic();
     widget.update();
-    
   }
 
   @override
@@ -81,58 +102,54 @@ class _MyCardState extends State<MyCard> {
     getBasic();
   }
 
-    getBasic() async {
+  getBasic() async {
     var dbPath = await getDatabasesPath();
     String path = p.join(dbPath, "data.db");
     Database database = await openDatabase(path, version: 1);
-    
 
-    var data = await database
-        .rawQuery("SELECT * FROM tasks WHERE category = ? order by done", [widget.id]);
+    var data = await database.rawQuery(
+        "SELECT * FROM tasks WHERE category = ? order by done", [widget.id]);
 
     setState(() {
       tasks = data;
     });
     // print(data);
-    
+
     getCountOfStatus(tasks);
 
     // database.close();
   }
 
-
-  getCountOfStatus(List list) async{
+  getCountOfStatus(List list) async {
     int done = 0;
-    int notdone=0;
+    int notdone = 0;
     int total;
-    await list.forEach((item){
-      if(item['done']==1){
+    await list.forEach((item) {
+      if (item['done'] == 1) {
         done = done + 1;
-      }else{
+      } else {
         notdone = notdone + 1;
       }
     });
 
     setState(() {
-      progress = (done/list.length)*100;
+      progress = (done / list.length) * 100;
       pending = notdone;
     });
 
-    return {"done":done,"notdone":notdone};
-
+    return {"done": done, "notdone": notdone};
   }
 
   @override
   Widget build(BuildContext context) {
-
     PopupMenu.context = context;
 
     return GestureDetector(
-      onTap: () async{
-        await Navigator.push(context, MaterialPageRoute(builder: (c)=>CategoryHome(widget.id)));
+      onTap: () async {
+        await Navigator.push(context,
+            MaterialPageRoute(builder: (c) => CategoryHome(widget.id)));
         getBasic();
-    widget.update();
-
+        widget.update();
       },
       child: Container(
         decoration: BoxDecoration(
@@ -149,11 +166,15 @@ class _MyCardState extends State<MyCard> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[GestureDetector(key: btnKey, onTap:(){
-
-                  print("Popup");
-                  menu.show(widgetKey: btnKey);
-                },child: Image.asset("assets/dots.png"))],
+                children: <Widget>[
+                  GestureDetector(
+                      key: btnKey,
+                      onTap: () {
+                        print("Popup");
+                        menu.show(widgetKey: btnKey);
+                      },
+                      child: Image.asset("assets/dots.png"))
+                ],
               ),
             ),
             Container(
@@ -162,58 +183,55 @@ class _MyCardState extends State<MyCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    pending.toString()+" tasks",
+                    pending.toString() + " tasks",
                     style: Data.cardText1,
                   ),
                   Text(
                     widget.title,
                     style: Data.cardText2,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        child: Stack(
-                          // fit: StackFit.expand,
-                          fit: StackFit.passthrough,
-                          key: _progKey,
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-
-                                    gradient:
-                                        LinearGradient(colors: Data.gradient)),
-                              height: 4,
-                            ),
-
-                            Positioned(
-                              left: 40,
-                              child: Text("sdsd"),
-                            ),
-
-                            AnimatedPositioned(
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.decelerate,
-                              right: 0,
-                              top: 0,
-                              bottom: 0,
-                              left: progress,
-                              child: Container(
-                                // width: 50,
-                                color: Colors.grey[200],
-                                
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 5),
-                        child: Text(progress.roundToDouble().toString() + "%"),
-                      ),
-                    ],
-                  )
+                  ProgressBar(progress.roundToDouble()),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: <Widget>[
+                  //     Expanded(
+                  //       child: Stack(
+                  //         // fit: StackFit.expand,
+                  //         fit: StackFit.passthrough,
+                  //         key: _progKey,
+                  //         children: <Widget>[
+                  //           Container(
+                  //             decoration: BoxDecoration(
+                  //                 borderRadius: BorderRadius.circular(5),
+                  //                 gradient:
+                  //                     LinearGradient(colors: Data.gradient)),
+                  //             height: 4,
+                  //           ),
+                  //           Positioned(
+                  //             left: 40,
+                  //             child: Text("sdsd"),
+                  //           ),
+                  //           AnimatedPositioned(
+                  //             duration: Duration(milliseconds: 500),
+                  //             curve: Curves.decelerate,
+                  //             right: 0,
+                  //             top: 0,
+                  //             bottom: 0,
+                  //             left: progress,
+                  //             child: Container(
+                  //               // width: 50,
+                  //               color: Colors.grey[200],
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     Container(
+                  //       margin: EdgeInsets.only(left: 5),
+                  //       child: Text(progress.roundToDouble().toString() + "%"),
+                  //     ),
+                  //   ],
+                  // )
                 ],
               ),
             ),

@@ -4,10 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../Data.dart';
 
 class User extends StatelessWidget {
-
   int tasks;
-  GoogleSignInAccount user;
-  User({this.tasks,this.user});
+  User({this.tasks});
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +22,13 @@ class User extends StatelessWidget {
               onTap: () {},
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    user.photoUrl),
+                    "https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png"),
               ),
             ),
           ),
           Container(
             margin: EdgeInsets.only(top: 20),
-            child: Text("Hello, ${user.displayName}", style: Data.nameStyle),
+            child: Text("Hello, User", style: Data.nameStyle),
           ),
           Container(
             margin: EdgeInsets.only(top: 10),

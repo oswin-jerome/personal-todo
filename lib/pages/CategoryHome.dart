@@ -72,10 +72,10 @@ class _CategoryHomeState extends State<CategoryHome> {
     // database.close();
   }
 
-  isExpired(task,done) {
+  isExpired(task, done) {
     DateTime taskDate = DateTime.parse(task);
     DateTime today = DateTime.now().subtract(Duration(days: 1));
-    if (taskDate.isBefore(today) && done !=1) {
+    if (taskDate.isBefore(today) && done != 1) {
       return TextStyle(color: Colors.red);
     } else {
       return TextStyle();
